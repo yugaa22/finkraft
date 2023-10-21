@@ -1,5 +1,10 @@
-def main():
-    print("Hello, World!")
+from flask import Flask
+app = Flask(__name__)
+
+@app.route('/')
+def index():
+    print(i)  # Corrected indentation
+    return 'Hello World'
 
 if __name__ == "__main__":
-    main()
+    app.run(debug=True, host='0.0.0.0')
