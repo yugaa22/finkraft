@@ -23,7 +23,7 @@ jobs:
         working-directory: .
         
       - name: Lint code
-        run: flake8 helloworld.py  # Use your preferred linter (e.g., flake8)
+        run: flake8 app.py  # Use your preferred linter (e.g., flake8)
 
   testing:
     runs-on: ubuntu-latest
@@ -39,7 +39,7 @@ jobs:
 
       - name: Run tests
         working-directory: .
-        run: python3 test_helloworld.py   # Replace with your testing command
+        run: python3 test_app.py   # Replace with your testing command
 
   deploy:
     runs-on: ubuntu-latest
@@ -61,7 +61,7 @@ jobs:
 
       - name: Deploy Python script
         run: |
-          scp -i ssh-key.pem your-script.py ubuntu@${{ secrets.EC2_INSTANCE_IP }}:/home/ubuntu/
-          ssh -i ssh-key.pem ubuntu@${{ secrets.EC2_INSTANCE_IP }} "python3 /home/ubuntu/hellowold.py"
+          scp -i ssh-key.pem app.py ubuntu@${{ secrets.EC2_INSTANCE_IP }}:/home/ubuntu/
+          ssh -i ssh-key.pem ubuntu@${{ secrets.EC2_INSTANCE_IP }} "python3 /home/ubuntu/app.py"
         env:
           EC2_INSTANCE_IP: ${{ secrets.EC2_INSTANCE_IP }}
