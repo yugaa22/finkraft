@@ -68,3 +68,8 @@ jobs:
           ssh -i ssh-key.pem ubuntu@${{ secrets.EC2_INSTANCE_IP }} "python3 /home/ubuntu/app.py"
         env:
           EC2_INSTANCE_IP: ${{ secrets.EC2_INSTANCE_IP }}
+      - name: Stop Flask Server
+        run: |
+          sleep 20
+          ssh -i ${{ secrets.SSH_KEY }} -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_INSTANCE_IP }} "pkill -f 'python3 app.py'"
+
