@@ -65,7 +65,7 @@ jobs:
       - name: Deploy Python script
         run: |
           scp -i ssh-key.pem app.py ubuntu@${{ secrets.EC2_INSTANCE_IP }}:/home/ubuntu/
-          ssh -i ssh-key.pem ubuntu@${{ secrets.EC2_INSTANCE_IP }} "python3 /home/ubuntu/app.py"
+          ssh -i ssh-key.pem ubuntu@${{ secrets.EC2_INSTANCE_IP }} "nohup python3 & /home/ubuntu/app.py &"
         env:
           EC2_INSTANCE_IP: ${{ secrets.EC2_INSTANCE_IP }}
       - name: Stop Flask Server
