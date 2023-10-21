@@ -1,14 +1,52 @@
-name: Deploy to EC2
+name: Deploy and Test to EC2
 
 on:
-  workflow_dispatch:   # Add this to enable manual triggering
+  workflow_dispatch:
   push:
     branches:
       - main
+
 jobs:
+  linting:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.x
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+        working-directory: finkraft
+        
+      - name: Lint code
+        run: flake8 helloworld.py  # Use your preferred linter (e.g., flake8)
+
+  testing:
+    runs-on: ubuntu-latest
+    needs: linting
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.x
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+        working-directory: path/to/your/project
+
+      - name: Run tests
+        run: python -m unittest discover  # Replace with your testing command
+
   deploy:
     runs-on: ubuntu-latest
-
+    needs: [linting, testing]
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -17,16 +55,15 @@ jobs:
         run: |
           echo "$EC2_SSH_KEY" > ssh-key.pem
           chmod 600 ssh-key.pem
-          mkdir -p ~/.ssh  # Create the .ssh directory if it doesn't exist
-          touch ~/.ssh/known_hosts 
-    
+          mkdir -p ~/.ssh
+          touch ~/.ssh/known_hosts
           ssh-keyscan -H ${{ secrets.EC2_INSTANCE_IP }} >> ~/.ssh/known_hosts
         env:
           EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
 
       - name: Deploy Python script
         run: |
-          scp -i ssh-key.pem helloworld.py ubuntu@${{ secrets.EC2_INSTANCE_IP }}:/home/ubuntu
-          ssh -i ssh-key.pem ubuntu@${{ secrets.EC2_INSTANCE_IP }} "python3 /home/ubuntu/helloworld.py"
+          scp -i ssh-key.pem your-script.py ubuntu@${{ secrets.EC2_INSTANCE_IP }}:/home/ubuntu/
+          ssh -i ssh-key.pem ubuntu@${{ secrets.EC2_INSTANCE_IP }} "python3 /home/ubuntu/hellowold.py"
         env:
           EC2_INSTANCE_IP: ${{ secrets.EC2_INSTANCE_IP }}
