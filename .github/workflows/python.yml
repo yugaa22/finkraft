@@ -1,0 +1,30 @@
+
+name: Deploy to EC2
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Copy SSH key to the runner
+        run: |
+          echo "$EC2_SSH_KEY" > ssh-key.pem
+          chmod 600 ssh-key.pem
+          ssh-keyscan -H ${{ secrets.EC2_INSTANCE_IP }} >> ~/.ssh/known_hosts
+        env:
+          EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
+
+      - name: Deploy Python script
+        run: |
+          scp -i ssh-key.pem helloworld.py ec2-user@${{ secrets.EC2_INSTANCE_IP }}:/home/ubuntu
+          ssh -i ssh-key.pem ec2-user@${{ secrets.EC2_INSTANCE_IP }} "python /home/ubuntu/helloworld.py"
+        env:
+          EC2_INSTANCE_IP: ${{ secrets.EC2_INSTANCE_IP }}
