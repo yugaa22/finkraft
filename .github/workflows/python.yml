@@ -20,7 +20,7 @@ jobs:
 
       - name: Install dependencies
         run: pip install -r requirements.txt
-        working-directory: finkraft
+        working-directory: .
         
       - name: Lint code
         run: flake8 helloworld.py  # Use your preferred linter (e.g., flake8)
