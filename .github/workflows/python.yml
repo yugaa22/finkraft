@@ -37,8 +37,11 @@ jobs:
         with:
           python-version: 3.10.12
 
-      - name: Run tests
+      - name: Install dependencies
+        run: pip install -r requirements.txt
         working-directory: .
+
+      - name: Run tests
         run: python3 test_app.py   # Replace with your testing command
 
   deploy:
