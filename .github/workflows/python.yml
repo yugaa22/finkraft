@@ -37,12 +37,8 @@ jobs:
         with:
           python-version: 3.10.12
 
-      - name: Install dependencies
-        run: pip install -r requirements.txt
-        working-directory: path/to/your/project
-
       - name: Run tests
-        run: python -m unittest discover  # Replace with your testing command
+        run: python3 test_helloworld.py   # Replace with your testing command
 
   deploy:
     runs-on: ubuntu-latest
