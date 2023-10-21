@@ -26,7 +26,7 @@ jobs:
 
       - name: Deploy Python script
         run: |
-          scp -i ssh-key.pem helloworld.py ec2-user@${{ secrets.EC2_INSTANCE_IP }}:/home/ubuntu
-          ssh -i ssh-key.pem ec2-user@${{ secrets.EC2_INSTANCE_IP }} "python /home/ubuntu/helloworld.py"
+          scp -i ssh-key.pem helloworld.py ubuntu@${{ secrets.EC2_INSTANCE_IP }}:/home/ubuntu
+          ssh -i ssh-key.pem ubuntu@${{ secrets.EC2_INSTANCE_IP }} "python /home/ubuntu/helloworld.py"
         env:
           EC2_INSTANCE_IP: ${{ secrets.EC2_INSTANCE_IP }}
